@@ -18,8 +18,9 @@ function LongList(el, opts){
     this.id = this.parent.attr('id') + '-long-list-';
     this.el = $(el);
     this.el.empty();
+    this.invisibleClassName = opts.invisibleClassName || 'invisible';
+    this.templateVars = opts.templateVars;
     this.items = opts.items;
-    this.itemClassName = $(opts.itemClassName);
     this.itemHeight = opts.itemHeight;
     this.totalHeight = this.items.length * this.itemHeight;
     this.template = opts.template;
@@ -69,17 +70,19 @@ LongList.prototype.html = function(i, sumHeight){
         }
     );
     var sectionWrapper = $('<div id="' + id + '"></div>');
-    var html = this.template(
+    var templateVars = $.extend(
         {
             'items': items,
             'startIndex': start
-        }
+        },
+        this.templateVars
     );
+    var html = this.template(templateVars);
     this.requestAnimationFrame(
         function(){
             $(sectionWrapper)
                 .html(html)
-                .addClass('invisible');
+                .addClass(this.invisibleClassName);
             this.el.append(sectionWrapper);
         }.bind(this)
     );
@@ -106,7 +109,7 @@ LongList.prototype.show = function(sectionNumber){
         this.requestAnimationFrame(
             function(){
                 var el = $(this.sectionHeights[sectionNumber].id);
-                el.removeClass('invisible');
+                el.removeClass(this.invisibleClassName);
                 this.sectionHeights[sectionNumber].visible = true;
             }
         );
@@ -118,7 +121,7 @@ LongList.prototype.hide = function(sectionNumber){
         this.requestAnimationFrame(
             function(){
                 var el = $(this.sectionHeights[sectionNumber].id);
-                el.addClass('invisible');
+                el.addClass(this.invisibleClassName);
                 this.sectionHeights[sectionNumber].visible = false;
             }
         );
