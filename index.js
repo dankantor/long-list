@@ -18,7 +18,7 @@ function LongList(el, opts){
     this.id = this.parent.attr('id') + '-long-list-';
     this.el = $(el);
     this.el.empty();
-    this.invisibleClassName = opts.invisibleClassName || 'invisible';
+    this.invisibleClassName = opts.invisibleClassName || 'display_none';
     this.templateVars = opts.templateVars;
     this.items = opts.items;
     this.itemHeight = opts.itemHeight;
@@ -69,7 +69,10 @@ LongList.prototype.html = function(i, sumHeight){
             'visible': false
         }
     );
-    var sectionWrapper = $('<div id="' + id + '"></div>');
+    var sectionWrapper = $('<div id="wrapper-' + id + '"></div>');
+    $(sectionWrapper).css('height', height);
+    var sectionInner = $('<div id="' + id + '"></div>');
+    $(sectionWrapper).html(sectionInner);
     var templateVars = $.extend(
         {
             'items': items,
@@ -80,7 +83,7 @@ LongList.prototype.html = function(i, sumHeight){
     var html = this.template(templateVars);
     this.requestAnimationFrame(
         function(){
-            $(sectionWrapper)
+            $(sectionInner)
                 .html(html)
                 .addClass(this.invisibleClassName);
             this.el.append(sectionWrapper);
@@ -129,7 +132,6 @@ LongList.prototype.hide = function(sectionNumber){
 }
 
 LongList.prototype.onScroll = function(e){
-    var percentage = Math.floor(this.parent.scrollTop() * 100 / this.totalHeight);
     var scrollTop = this.parent.scrollTop();
     for(var i in this.sectionHeights){
         var section = this.sectionHeights[i];
