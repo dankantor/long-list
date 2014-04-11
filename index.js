@@ -17,6 +17,10 @@ function LongList(el, opts){
     this.parent = $(opts.parent);
     this.id = this.parent.attr('id') + '-long-list-';
     this.el = $(el);
+    var oldRenderInterval = $(this.el).data('renderInterval');
+    if(oldRenderInterval){
+        clearInterval(oldRenderInterval);
+    }
     this.el.empty();
     this.invisibleClassName = opts.invisibleClassName || 'display_none';
     this.templateVars = opts.templateVars;
@@ -48,6 +52,7 @@ function LongList(el, opts){
         }.bind(this),
         20
     );
+    $(this.el).data('renderInterval', this.renderInterval);
     this.removeListeners();
     this.show(0);
     return this;
